@@ -1,0 +1,72 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}Your Shopping Cart{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Корзина</h1>
+
+        {% if cart|length > 0 %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Товар</th>
+                            <th>Количество</th>
+                            <th>Цена за 1 шт.</th>
+                            <th>Цена</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart %}
+                            {% with product=item.product %}
+                            <tr>
+                                <td>
+                                    <a href="{{ product.get_absolute_url }}">
+                                        {{ product.name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <form action="{% url 'cart:cart_add' product.id %}" method="post">
+                                        {{ item.update_quantity_form.quantity }}
+                                        {{ item.update_quantity_form.override }}
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Обновить</button>
+                                        {% csrf_token %}
+                                    </form>
+                                </td>
+                                <td>${{ item.price }}</td>
+                                <td>${{ item.total_price }}</td>
+                                <td>
+                                    <form action="{% url 'cart:cart_remove' product.id %}" method="post">
+                                        <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
+                                        {% csrf_token %}
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endwith %}
+                        {% endfor %}
+                        <tr class="table-secondary">
+                            <td colspan="3"><strong>Итог</strong></td>
+                            <td colspan="2"><strong>${{ cart.get_total_price }}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{% url 'shop:product_list' %}" class="btn btn-secondary">
+                    Вернуться в магазин
+                </a>
+                <a href="{% url 'orders:order_create' %}" class="btn btn-primary">
+                    Оформить заказ
+                </a>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                Корзина пуста. <a href="{% url 'shop:product_list' %}">Вернуться в магазин</a>.
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

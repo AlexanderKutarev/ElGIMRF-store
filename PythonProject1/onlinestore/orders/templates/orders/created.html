@@ -1,0 +1,16 @@
+{% extends "shop/base.html" %}
+
+{% block title %}Спасибо{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h1 class="mb-4">Спасибо</h1>
+    <div class="alert alert-success">
+        <p>Заказ оформлен!</p>
+        <p>Номер заказа <strong>{{ order.id }}</strong>.</p>
+    </div>
+    <a href="{% url 'shop:product_list' %}" class="btn btn-primary">
+        Вернуться в магазин
+    </a>
+</div>
+{% endblock %}
